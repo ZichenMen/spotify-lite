@@ -16,3 +16,9 @@ export const getLikedSongs = (userId) => API.get(`/user/${userId}/songs`);
 // FOLLOW ARTIST
 export const followArtist = (userId, artistId) =>
   API.put("/artists/follow", { userId, artistId });
+
+export const unlikeSong = (userId, songId) =>
+  API.put("/songs/unlike", { userId, songId });
+
+export const unfollowArtist = (userId, artistId) =>
+  API.put("/artists/unfollow", { userId, artistId });

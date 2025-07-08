@@ -1,6 +1,5 @@
 import React from "react";
-
-export default function SongCard({ song, onLike, onFollow }) {
+export default function SongCard({ song, onLike, onFollow, onUnlike }) {
   return (
     <div
       style={{
@@ -19,9 +18,13 @@ export default function SongCard({ song, onLike, onFollow }) {
       <p>
         <b>Language:</b> {song.language}
       </p>
+
       {onLike && <button onClick={() => onLike(song._id)}>Like</button>}
       {onFollow && song.artist && (
         <button onClick={() => onFollow(song.artist._id)}>Follow Artist</button>
+      )}
+      {onUnlike && (
+        <button onClick={() => onUnlike(song._id)}>Remove Like</button>
       )}
     </div>
   );

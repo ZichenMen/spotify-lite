@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { getLikedSongs } from "../services/api";
+import { unlikeSong, unfollowArtist } from "../services/api";
 import SongList from "../components/SongList";
+
 import axios from "axios";
 
-const fakeUserId = "686b922692dbe5b5393b0589"; // Replace with actual ID from MongoDB
+const fakeUserId = "686c33b01c95489eb43a3f85";
 
 export default function Profile() {
   const [likedSongs, setLikedSongs] = useState([]);
@@ -30,6 +32,7 @@ export default function Profile() {
           username: profileRes.data.username,
           email: profileRes.data.email,
         });
+        setLikedSongs(profileRes.data.likedSongs || []); // <-- use this instead
 
         setFormData({
           username: profileRes.data.username || "",
@@ -39,6 +42,8 @@ export default function Profile() {
       } catch (err) {
         console.error("Error fetching profile:", err);
       }
+      const profileRes = await axios.get(`/user/${fakeUserId}`);
+      console.log("🎯 User profile response:", profileRes.data);
     };
 
     fetchData();
@@ -62,6 +67,16 @@ export default function Profile() {
       console.error("Update failed:", err);
       alert("Error updating profile");
     }
+  };
+
+  const handleUnlike = async (songId) => {
+    await unlikeSong(fakeUserId, songId);
+    setLikedSongs((prev) => prev.filter((s) => s._id !== songId));
+  };
+
+  const handleUnfollow = async (artistId) => {
+    await unfollowArtist(fakeUserId, artistId);
+    setFollowedArtists((prev) => prev.filter((a) => a._id !== artistId));
   };
 
   return (
@@ -120,20 +135,25 @@ export default function Profile() {
         </form>
       )}
 
-      <h3>Liked Songs ❤️</h3>
+      <h3>Liked Songs</h3>
       {likedSongs.length === 0 ? (
         <p>No liked songs yet.</p>
       ) : (
-        <SongList songs={likedSongs} />
+        <SongList songs={likedSongs} onUnlike={handleUnlike} />
       )}
 
-      <h3>Followed Artists 🎧</h3>
+      <h3>Followed Artists</h3>
       {followedArtists.length === 0 ? (
         <p>No followed artists yet.</p>
       ) : (
         <ul>
           {followedArtists.map((artist) => (
-            <li key={artist._id}>{artist.name}</li>
+            <li key={artist._id}>
+              {artist.name}
+              <button onClick={() => handleUnfollow(artist._id)}>
+                Unfollow
+              </button>
+            </li>
           ))}
         </ul>
       )}

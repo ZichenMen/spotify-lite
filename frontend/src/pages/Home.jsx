@@ -3,18 +3,14 @@ import SearchBar from "../components/SearchBar";
 import SongList from "../components/SongList";
 import { searchSongs, likeSong, followArtist } from "../services/api";
 
-const fakeUserId = "686b922692dbe5b5393b0589"; // Replace with actual ID from MongoDB
+const fakeUserId = "686c33b01c95489eb43a3f85"; // Replace with actual ID from MongoDB
 
 export default function Home() {
   const [songs, setSongs] = useState([]);
 
   const handleSearch = async (query) => {
-    try {
-      const res = await searchSongs(query);
-      setSongs(res.data);
-    } catch (err) {
-      console.error("Error fetching songs:", err);
-    }
+    const res = await searchSongs(query);
+    setSongs(res.data);
   };
 
   const handleLike = async (songId) => {
